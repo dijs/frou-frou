@@ -11,6 +11,25 @@ export default class App extends React.Component {
     this.sendTurnClockwise = this.sendTurnClockwise.bind(this)
     this.sendMoveForward = this.sendMoveForward.bind(this)
     this.sendStopMotion = this.sendStopMotion.bind(this)
+    window.onload = this.handleLoad.bind(this)
+    window.onunload = this.handleUnload.bind(this)
+  }
+  handleLoad() {
+    this.setState({
+      message: 'Opening communication...'
+    })
+    fetch('/open').then(() => {
+      this.setState({
+        message: 'Opened communication.'
+      })
+    })
+  }
+  handleUnload() {
+    fetch('/close').then(() => {
+      this.setState({
+        message: 'Closing communication...'
+      })
+    })
   }
   sendTurnCounterClockwise() {
     fetch('/turn/counter-clockwise').then(() => {
