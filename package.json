@@ -1,8 +1,8 @@
 {
-  "name": "react-starter",
+  "name": "frou-frou",
   "version": "1.0.0",
-  "description": "A React Starter Project",
-  "main": "server.js",
+  "description": "Vaccum Robot",
+  "main": "index.js",
   "scripts": {
     "start": "node server"
   },
