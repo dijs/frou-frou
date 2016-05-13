@@ -1,5 +1,6 @@
 var express = require('express');
 var vaccom = require('vaccom');
+var exec = require('child-process-promise').exec;
 
 var serialOpen = vaccom.serialOpen;
 var serialClose = vaccom.serialClose;
@@ -16,17 +17,35 @@ var port = process.env.PORT || 3000;
 
 app.use('/', express.static(__dirname + '/static'));
 
+var currentUsers = 0;
+var streaming = false;
+
 app.get('/open', function (req, res) {
+  currentUsers++;
   serialOpen()
     .then(function() { return wait(500); })
     .then(function() { return safeMode(); })
     .then(function() { return wait(500); })
+    .then(function () {
+      if (!streaming) {
+        streaming = true;
+        return exec(__dirname + '/scripts/start-stream.sh');
+      }
+      return true;
+    })
     .then(function() { return res.send('done'); })
     .catch(function(err) { return console.log(err.stack); })
 });
 
 app.get('/close', function (req, res) {
+  currentUsers--;
   serialClose()
+    .then(function () {
+      if (!currentUsers) {
+        return exec(__dirname + '/scripts/stop-stream.sh');
+      }
+      return true;
+    })
     .then(function() { return res.send('done'); })
     .catch(function(err) { return console.log(err.stack); })
 });
