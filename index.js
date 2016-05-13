@@ -22,7 +22,7 @@ var streaming = false;
 
 app.get('/open', function (req, res) {
   currentUsers++;
-  serialOpen()
+  serialOpen('/dev/ttyAMA0')
     .then(function() { return wait(500); })
     .then(function() { return safeMode(); })
     .then(function() { return wait(500); })
